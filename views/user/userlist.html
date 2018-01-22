@@ -1,0 +1,148 @@
+
+<div class="Hui-article-box">
+        <nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="/" class="maincolor">首页</a> 
+            <span class="c-999 en">&gt;</span>
+            <span class="c-666">用户管理</span> 
+            <span class="c-999 en">&gt;</span>
+            <span class="c-666">用户列表</span> 
+            <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i id="refresh" class="Hui-iconfont">&#xe68f;</i></a>
+        </nav>
+        <div class="Hui-article">
+            <article class="cl pd-20">
+                <div class="cl pd-5 bg-1 bk-gray mt-20">
+                    <span class="l"> 
+                        <a href="javascript:;" onclick="user_add()" class="btn btn-primary radius">
+                            <i class="Hui-iconfont">&#xe600;</i> 添加管理员</a> </span>
+                    <span class="r">共有数据：<strong>{{.total}}</strong> 条</span>
+                    {{if .hasdata}}
+                    <div class="mt-20">
+                        <table class="table table-border table-bordered table-hover table-bg table-sort">
+                            <thead>
+                                <tr>
+                                    <th scope="col" colspan="9">用户列表</th>
+                                </tr>
+                                <tr class="text-c">
+                                    <th width="120">登录名</th>
+                                    <th width="120">昵称</th>
+                                    <th width="120">真实姓名</th>
+                                    <th width="40">性别</th>
+                                    <th width="90">手机</th>
+                                    <th width="150">邮箱</th>
+                                    <th width="100">是否已启用</th>
+                                    <th width="100">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range $index, $user := .users}}
+                                <tr class="text-c">
+                                    <td>{{$user.Username}}</td>
+                                    <td>{{$user.Nickname}}</td>
+                                    <td>{{$user.Realname}}</td>
+                                    <td>{{$user.Gender}}</td>
+                                    <td>{{$user.Phone}}</td>
+                                    <td>{{$user.Email}}</td>
+                                    {{if eq $user.Status 1}}
+                                    <td class="td-status"><span class="label label-success radius">已启用</span></td>
+                                    {{else if eq $user.Status 0}}
+                                    <td class="td-status"><span class="label radius">已停用</span></td>
+                                    {{else}}
+                                    <td class="td-status"><span class="label label-danger radius">未知</span></td>
+                                    {{end}}
+                                    <td class="td-manage">
+                                        {{if eq $user.Status 1}}
+                                        <a style="text-decoration:none" onClick="user_disable({{$user.Id}})" href="javascript:;" title="停用"><i class="Hui-iconfont">&#xe631;</i></a> 
+                                        {{else}}
+                                        <a style="text-decoration:none" onClick="user_enable({{$user.Id}})" href="javascript:;" title="启用"><i class="Hui-iconfont">&#xe615;</i></a>
+                                        {{end}}
+                                        <a title="编辑" href="javascript:;" onclick="user_edit({{$user.Id}})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> 
+                                        <a title="删除" href="javascript:;" onclick="user_del({{$user.Id}})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                        {{if .paginator.HasPages}}
+                            <ul class="pagination">
+                                {{if .paginator.HasPrev}}
+                                <li><a href="{{.paginator.PageLinkFirst}}">首页</a></li>
+                                <li><a href="{{.paginator.PageLinkPrev}}">&laquo;</a></li>
+                                {{else}}
+                                <li class="disabled"><a>首页</a></li>
+                                <li class="disabled"><a>&laquo;</a></li>
+                                {{end}}
+                                {{range $index, $page := .paginator.Pages}} <li{{if $.paginator.IsActive .}} class="active"{{end}}> <a href="{{$.paginator.PageLink $page}}">{{$page}}</a>
+                                </li>
+                                {{end}}
+                                {{if .paginator.HasNext}}
+                                <li><a href="{{.paginator.PageLinkNext}}">&raquo;</a></li>
+                                <li><a href="{{.paginator.PageLinkLast}}">尾页</a></li>
+                                {{else}}
+                                <li class="disabled"><a>&raquo;</a></li>
+                                <li class="disabled"><a>尾页</a></li>
+                                {{end}}
+                            </ul>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+            </article>
+        </div>    
+</div>
+
+<script type="text/javascript" src="/static/h-ui/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript" src="/static/h-ui/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+<script type="text/javascript" src="/static/h-ui/lib/laypage/1.2/laypage.js"></script>
+
+<script type="text/javascript">
+function user_add(){
+    layer_show("新增用户","/admin/useradd",800,500);
+}
+
+function user_edit(id){
+    layer_show("用户编辑", "/admin/useredit?id=" + id, 800, 500)
+}
+
+function user_enable(id){
+    layer.confirm('确认要启用吗？',function(index){
+        $.ajax({
+            url:"/service/admin/user_status_change",
+            dataType:"json",
+            type:"POST",
+            cache:false,
+            data:{id:id, status:1},
+            success:function(data){
+                if (data.status == 0){
+                    $.Huimodalalert(data.message,2000) 
+                    $('#refresh').click();
+                }else{
+                    $.Huimodalalert(data.message,2000)
+                }
+            }
+        })
+    });
+}
+
+function user_disable(id){
+    layer.confirm('确认要停用吗？',function(index){
+        $.ajax({
+            url:"/service/admin/user_status_change",
+            dataType:"json",
+            type:"POST",
+            cache:false,
+            data:{id:id, status:0},
+            success:function(data){
+                if (data.status == 0){
+                    $.Huimodalalert(data.message,2000)
+                    $('#refresh').click();
+                }else{
+                    $.Huimodalalert(data.message,2000)
+                }
+            }
+        })
+    });
+}
+
+function user_del(id){
+    alert(id)
+}
+</script>

@@ -1,0 +1,11 @@
+appname = chain admin
+appversion = "1.0.0"
+httpport = 8080
+runmode = dev
+
+db.host = 127.0.0.1
+db.port = 3306
+db.user = root
+db.pwd = 123456
+db.name = chain_admin
+db.timezone = Asia/Shanghai
