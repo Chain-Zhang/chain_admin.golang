@@ -2,7 +2,10 @@ package controllers
 
 import(
 	"time"
+
 	"chain_admin.golang/models"
+	"chain_admin.golang/util"
+
 	"github.com/astaxie/beego/utils/pagination"
 	"github.com/astaxie/beego/logs"
 )
@@ -34,9 +37,18 @@ func (self *UserController)UserAdd(){
 	self.modal_display()
 }
 
+func (self *UserController)UserEdit(){
+	id, _ := self.GetInt("id")
+	user, _ := models.GetUserById(id)
+    logs.Info(user)
+	self.Data["user"] = user
+	self.modal_display()
+}
+
 func (self *UserController)AjaxAdd(){
 	user := new(models.User)
 	user.Username = self.GetString("username")
+	user.Password = util.Md5("123456", false)
 	user.Email = self.GetString("email")
 	user.Nickname = self.GetString("nickname")
 	user.Realname = self.GetString("realname")
@@ -51,6 +63,28 @@ func (self *UserController)AjaxAdd(){
     self.ajaxMsg("添加用户成功", MSG_OK)
 }
 
+func (self *UserController)AjaxEdit(){
+	id, err := self.GetInt("id")
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	user, err := models.GetUserById(id) 
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	user.Email = self.GetString("email")
+	user.Nickname = self.GetString("nickname")
+	user.Realname = self.GetString("realname")
+	user.Gender,_ = self.GetInt("gender")
+	user.Phone = self.GetString("phone")
+	user.UpdatedAt = time.Now()
+	err = user.Update()
+	if err != nil{
+        self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+    self.ajaxMsg("修改用户成功", MSG_OK)
+}
+
 func (self *UserController)UserStatusChange(){
 	id, err := self.GetInt("id")
 	if err != nil{
@@ -61,7 +95,6 @@ func (self *UserController)UserStatusChange(){
 		self.ajaxMsg(err.Error(), MSG_ERR)
 	}
 	user, err := models.GetUserById(id) 
-	logs.Info(user)
 	if err != nil{
 		self.ajaxMsg(err.Error(), MSG_ERR)
 	}
@@ -71,4 +104,23 @@ func (self *UserController)UserStatusChange(){
 		self.ajaxMsg(err.Error(), MSG_ERR)
 	}
 	self.ajaxMsg("用户【"+user.Username+"】状态已修改成功", MSG_OK)
+}
+
+func (self *UserController)UserDel(){
+	id, err := self.GetInt("id")
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	user, err := models.GetUserById(id) 
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	count, err := user.UserDelete("id")
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	if count < 1{
+		self.ajaxMsg("未删除任何数据", MSG_ERR)
+	}
+	self.ajaxMsg("用户【"+user.Username+"】已删除成功", MSG_OK)
 }

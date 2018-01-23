@@ -1,0 +1,131 @@
+
+<article class="cl pd-20">
+	<form action="" method="post" class="form form-horizontal" id="user-add">
+        <input name="id" hidden value="{{.user.Id}}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" readonly name="username" value="{{.user.Username}}">
+			</div>
+        </div>
+        <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>昵称：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="" name="nickname" value="{{.user.Nickname}}">
+                </div>
+        </div>
+        <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>真实姓名：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" placeholder="" name="realname" value="{{.user.Realname}}">
+                </div>
+        </div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>邮箱：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="email" class="input-text"  placeholder="邮箱" name="email" value="{{.user.Email}}">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>电话：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text"  placeholder="电话" name="phone" value="{{.user.Phone}}">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>性别：</label>
+			<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                {{if eq .user.Gender 1}}
+				<div class="radio-box">
+					<input name="gender" type="radio" id="sex-1" value="1" checked>
+					<label for="sex-1">男</label>
+				</div>
+				<div class="radio-box">
+					<input type="radio" id="sex-2" name="gender" value="2">
+					<label for="sex-2">女</label>
+                </div>
+                {{else}}
+                <div class="radio-box">
+                    <input name="gender" type="radio" id="sex-1" value="1">
+                    <label for="sex-1">男</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" id="sex-2" name="gender" value="2" checked>
+                    <label for="sex-2">女</label>
+                </div>
+                {{end}}
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+			</div>
+		</div>
+	</form>
+</article>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/static/h-ui/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="/static/h-ui/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="/static/h-ui/lib/jquery.validation/1.14.0/messages_zh.js"></script> 
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	
+	$("#user-add").validate({
+		rules:{
+			username:{
+				required:true,
+				minlength:4,
+				maxlength:16
+			},
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			var id = $('input[name=id]').val()
+			var nickname = $('input[name=nickname]').val()
+			var realname = $('input[name=realname]').val()
+			var email = $('input[name=email]').val()
+			var phone = $('input[name=phone]').val()
+			var gender = $('input[name=gender]:checked').val()
+			$.ajax({
+				url : "/service/admin/user_edit",
+				dataType : "json",
+				type : "POST",
+				cache : false,
+				data:{
+					id:id,
+					nickname:nickname,
+					realname:realname,
+					email:email,
+					phone:phone,
+					gender:gender
+				},
+				success:function(data){
+					console.log("修改用户成功：")
+					console.log(data)
+					if(data.status == 0){
+						var index = parent.layer.getFrameIndex(window.name);
+			            parent.$('#refresh').click();
+					    parent.layer.close(index);
+					}else{
+						$.Huimodalalert(data.message,2000)
+					}
+				},
+				error: function (xhr, status, error) {
+                    console.log(xhr);
+                    console.log(status);
+                    console.log(error);
+                }
+			});
+			
+		}
+	});
+});
+</script>

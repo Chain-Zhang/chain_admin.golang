@@ -143,6 +143,25 @@ function user_disable(id){
 }
 
 function user_del(id){
-    alert(id)
+    layer.confirm('确认要删除该用户吗？',function(){
+        $.ajax({
+            url:"/service/admin/user_del",
+            dataType:"json",
+            type:"POST",
+            cache:false,
+            data:{id:id},
+            success:function(data){
+                if (data.status == 0){
+                    layer.msg(data.message, {icon: 1});
+                    $('#refresh').click();
+                }else{
+                    layer.msg(data.message, {icon: 2});
+                }
+            }
+        })
+    },
+    function(){
+        layer.msg('已取消', {icon: 6});
+    });
 }
 </script>
