@@ -47,6 +47,15 @@ func GetUserById(id int)(*User, error){
 	return user, nil
 }
 
+func GetUserByName(username string)(*User, error){
+	user := new(User)
+	err := orm.NewOrm().QueryTable(user.TableName()).Filter("username", username).One(user)
+    if err != nil{
+		return nil, err
+	}
+	return user, nil
+}
+
 func GetUserList(page, pageSize int, filters ...interface{})([]*User, int64){
 	offset := (page - 1) * pageSize
 	list := make([]*User, 0)

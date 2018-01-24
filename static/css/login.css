@@ -1,4 +1,4 @@
-@import url(http://fonts.useso.com/css?family=Source+Sans+Pro:200,300);
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -7,33 +7,28 @@
 }
 body {
   font-family: 'Source Sans Pro', sans-serif;
-  color: white;
   font-weight: 300;
 }
 body ::-webkit-input-placeholder {
   /* WebKit browsers */
   font-family: 'Source Sans Pro', sans-serif;
-  color: white;
   font-weight: 300;
 }
 body :-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
   font-family: 'Source Sans Pro', sans-serif;
-  color: white;
   opacity: 1;
   font-weight: 300;
 }
 body ::-moz-placeholder {
   /* Mozilla Firefox 19+ */
   font-family: 'Source Sans Pro', sans-serif;
-  color: white;
   opacity: 1;
   font-weight: 300;
 }
 body :-ms-input-placeholder {
   /* Internet Explorer 10+ */
   font-family: 'Source Sans Pro', sans-serif;
-  color: white;
   font-weight: 300;
 }
 .wrapper {
@@ -64,6 +59,7 @@ body :-ms-input-placeholder {
   text-align: center;
 }
 .container h1 {
+  color: #f5f7f9;
   font-size: 40px;
   -webkit-transition-duration: 1s;
           transition-duration: 1s;
