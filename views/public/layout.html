@@ -52,7 +52,7 @@
 						<ul class="dropDown-menu menu radius box-shadow">
 							<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
 							<li><a href="#">切换账户</a></li>
-							<li><a href="#">退出</a></li>
+							<li><a href="javascript:;" onClick="loginout()">退出</a></li>
 				</ul>
 			</li>
 					<li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger"></span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
@@ -92,5 +92,21 @@
 <div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
 <!--/_menu-->
 	{{.LayoutContent}}
+<script type="text/javascript">
+function loginout(){
+	$.ajax({
+		url:"/service/loginout",
+		dataType:"json",
+		type:"POST",
+		cache:false,
+		success:function(data){
+			console.log("loginout")
+			if (data.status == 0){
+				window.location.href = "/login";
+			}
+		},
+	})
+}
+</script>
 </body>
 </html>

@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"chain_admin.golang/util"
 	"chain_admin.golang/models"
+
+	"github.com/astaxie/beego/logs"
 )
 
 type LoginController struct{
@@ -31,4 +33,11 @@ func (self *LoginController)AjaxLogin(){
 	authkey := util.Md5(self.getClientIp() + "|" + password, false)
 	self.Ctx.SetCookie("auth", strconv.Itoa(user.Id) + "|" + authkey, 7 * 86400)
 	self.ajaxMsg("登录成功", MSG_OK)
+}
+
+//登出
+func (self *LoginController) LoginOut() {
+	logs.Info("loginout")
+	self.Ctx.SetCookie("auth", "")
+	self.ajaxMsg("退出成功", MSG_OK)
 }

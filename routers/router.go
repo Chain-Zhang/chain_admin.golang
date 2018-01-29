@@ -13,6 +13,7 @@ func init() {
 	beego.Router("/admin/useredit", &controllers.UserController{},"*:UserEdit")
 
 	beego.Router("/service/login", &controllers.LoginController{},"*:AjaxLogin")
+	beego.Router("/service/loginout", &controllers.LoginController{},"*:LoginOut")
 	beego.Router("/service/admin/user_add", &controllers.UserController{},"*:AjaxAdd")
 	beego.Router("/service/admin/user_edit", &controllers.UserController{},"*:AjaxEdit")
 	beego.Router("/service/admin/user_status_change", &controllers.UserController{}, "*:UserStatusChange")

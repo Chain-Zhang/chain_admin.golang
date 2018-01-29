@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"chain_admin.golang/util"
 	"strconv"
-	"github.com/astaxie/beego/logs"
 	"strings"
-	"github.com/astaxie/beego"
 
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+
+	"chain_admin.golang/util"
 	"chain_admin.golang/models"
 )
 
@@ -20,6 +21,7 @@ type BaseController struct{
 	controllerName string
 	actionName string
 	pageSize int
+	login_userId int
 	login_user *models.User
 }
 
@@ -36,20 +38,25 @@ func (self *BaseController) Prepare(){
 	if self.auth(){
 		self.Data["login_nickname"] = self.login_user.Nickname
 	}
-	
 }
 
 func (self *BaseController)auth() bool{
 	auth := self.Ctx.GetCookie("auth")
 	arr := strings.Split(auth, "|")
+	self.login_userId = 0
 	if len(arr) == 2{
 		idStr, authkey := arr[0], arr[1]
-		id, _ := strconv.Atoi(idStr)
-		user, _ := models.GetUserById(id)
-		if authkey == util.Md5(self.getClientIp() + "|" + user.Password, false){
-			self.login_user = user
-			return true
+		self.login_userId, _ = strconv.Atoi(idStr)
+		if self.login_userId > 0{
+			user, _ := models.GetUserById(self.login_userId)
+			if authkey == util.Md5(self.getClientIp() + "|" + user.Password, false){
+				self.login_user = user
+				return true
+			}
 		}
+	}
+	if self.login_userId < 1 && (self.controllerName != "login" && self.actionName != "loginin"){
+		self.redirect("/login")
 	}
 	return false
 }
