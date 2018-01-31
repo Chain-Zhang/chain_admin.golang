@@ -48,8 +48,8 @@ func (self *BaseController)auth() bool{
 		idStr, authkey := arr[0], arr[1]
 		self.login_userId, _ = strconv.Atoi(idStr)
 		if self.login_userId > 0{
-			user, _ := models.GetUserById(self.login_userId)
-			if authkey == util.Md5(self.getClientIp() + "|" + user.Password, false){
+			user,err := models.GetUserById(self.login_userId)
+			if err == nil && authkey == util.Md5(self.getClientIp() + "|" + user.Password, false){
 				self.login_user = user
 				return true
 			}
