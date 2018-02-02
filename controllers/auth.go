@@ -7,3 +7,7 @@ type AuthController struct{
 func (self *AuthController)List(){
 	self.display()
 }
+
+func (self *AuthController) Add(){
+	
+}
