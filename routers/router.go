@@ -21,4 +21,8 @@ func init() {
 	beego.Router("/service/admin/user_edit", &controllers.UserController{},"*:AjaxEdit")
 	beego.Router("/service/admin/user_status_change", &controllers.UserController{}, "*:UserStatusChange")
 	beego.Router("/service/admin/user_del", &controllers.UserController{}, "*:UserDel")
+
+	beego.Router("/service/admin/auth_add", &controllers.AuthController{}, "*:Add")
+	beego.Router("/service/admin/auth_getlist", &controllers.AuthController{}, "*:GetList")
+	beego.Router("/service/admin/auth_getone", &controllers.AuthController{}, "*:GetOne")
 }

@@ -23,6 +23,30 @@ func (self *Auth)TableName()string{
 	return "sys_auth"
 }
 
+
 func AuthAdd(auth *Auth)(int64, error){
     return orm.NewOrm().Insert(auth)
+}
+
+func GetAuthList(filters ...interface{})([]*Auth, int64){
+	list := make([]*Auth, 0)
+	query := orm.NewOrm().QueryTable("sys_auth")
+	if len(filters) > 0 {
+		l := len(filters)
+		for k := 0; k < l; k += 2 {
+			query = query.Filter(filters[k].(string), filters[k+1])
+		}
+	}
+	total, _ := query.Count()
+	query.OrderBy("sort").All(&list)
+	return list, total
+}
+
+func GetAuthById(id int)(*Auth, error){
+	auth := new(Auth)
+	err := orm.NewOrm().QueryTable("sys_auth").Filter("id", id).One(auth)
+    if err != nil{
+		return nil, err
+	}
+	return auth, nil
 }

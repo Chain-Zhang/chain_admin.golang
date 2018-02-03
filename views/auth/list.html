@@ -13,6 +13,7 @@
         <div class="tree-right">
             <article class="cl pd-20">
                 <form method="post" class="form form-horizontal" id="auth-edit">
+                    <input name="id" type="hidden">
                     <div class="row cl">
                         <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>父菜单编号：</label>
                         <div class="formControls col-xs-8 col-sm-9">
@@ -32,7 +33,7 @@
                         </div>
                     </div>
                     <div class="row cl">
-                        <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>Url：</label>
+                        <label class="form-label col-xs-4 col-sm-3">Url：</label>
                         <div class="formControls col-xs-8 col-sm-9">
                             <input type="text" class="input-text" value="" placeholder="" name="url">
                         </div>
@@ -44,9 +45,16 @@
                         </div>
                     </div>
                     <div class="row cl">
-                        <label class="form-label col-xs-4 col-sm-3">是否显示：</label>
+                        <label class="form-label col-xs-4 col-sm-3">摘要：</label>
                         <div class="formControls col-xs-8 col-sm-9">
-                            <input type="text" class="input-text" value="" placeholder="" name="is_show">
+                            <textarea name="desc" cols="" rows="6" class="textarea"  placeholder="说点什么..." datatype="*10-100" dragonfly="true" ></textarea>
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                            <button onclick="add()"  class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe604;</i> 新增</button>
+                            <button onclick="edit()"  class="btn btn-secondary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 修改</button>
+                            <button onclick="del()" class="btn btn-danger radius" type="button"><i class="Hui-iconfont">&#xe609;</i>删除</button>
                         </div>
                     </div>
                 </form>
@@ -61,10 +69,13 @@
 <script type="text/javascript">
     var setting = {
         data: {
+            key:{
+                name:"Name"
+            },
             simpleData: {
                 enable: true,
-                idKey: "id",
-                pIdKey: "pId",
+                idKey: "Id",
+                pIdKey: "ParentId",
             },
             
         },
@@ -73,43 +84,119 @@
 		}
     };
 
-    var zNodes =[
-        { id:1, pId:0, name:"父节点1 - 展开", open:true},
-        { id:11, pId:1, name:"父节点11 - 折叠"},
-        { id:111, pId:11, name:"叶子节点111", click:true},
-        { id:112, pId:11, name:"叶子节点112"},
-        { id:113, pId:11, name:"叶子节点113"},
-        { id:114, pId:11, name:"叶子节点114"},
-        { id:12, pId:1, name:"父节点12 - 折叠"},
-        { id:121, pId:12, name:"叶子节点121"},
-        { id:122, pId:12, name:"叶子节点122"},
-        { id:123, pId:12, name:"叶子节点123"},
-        { id:124, pId:12, name:"叶子节点124"},
-        { id:13, pId:1, name:"父节点13 - 没有子节点", isParent:true},
-        { id:2, pId:0, name:"父节点2 - 折叠"},
-        { id:21, pId:2, name:"父节点21 - 展开", open:true},
-        { id:211, pId:21, name:"叶子节点211"},
-        { id:212, pId:21, name:"叶子节点212"},
-        { id:213, pId:21, name:"叶子节点213"},
-        { id:214, pId:21, name:"叶子节点214"},
-        { id:22, pId:2, name:"父节点22 - 折叠"},
-        { id:221, pId:22, name:"叶子节点221"},
-        { id:222, pId:22, name:"叶子节点222"},
-        { id:223, pId:22, name:"叶子节点223"},
-        { id:224, pId:22, name:"叶子节点224"},
-        { id:23, pId:2, name:"父节点23 - 折叠"},
-        { id:231, pId:23, name:"叶子节点231"},
-        { id:232, pId:23, name:"叶子节点232"},
-        { id:233, pId:23, name:"叶子节点233"},
-        { id:234, pId:23, name:"叶子节点234"},
-        { id:3, pId:0, name:"父节点3 - 没有子节点", isParent:true}
-    ];
-
     $(function() {  
-        $.fn.zTree.init($("#tree"), setting, zNodes);
+        initTree()
     }); 
 
+    function initTree(){
+        $.ajax({
+            url:"/service/admin/auth_getlist",
+            dataType:"json",
+            type:"GET",
+            cache:false,
+            success:function(data){
+                console.log(data)
+                if (data.status == 0){
+                    var treeObj = $.fn.zTree.init($("#tree"), setting, data.message);
+                    treeObj.expandAll(true); 
+                }
+            }
+        })
+    }
+
     function onClick(event, treeId, treeNode, clickFlag) {
-		alert(treeNode.id + "-" + treeNode.name)
+		$.ajax({
+            url:"/service/admin/auth_getone?id=" + treeNode.Id,
+            dataType:"json",
+            type:"GET",
+            cache:false,
+            success:function(data){
+                console.log(data)
+                if (data.status == 0){
+                    $('input[name=id]').attr("value", data.message.Id)
+                    $('input[name=parent_id]').attr("value", data.message.ParentId)
+                    $('input[name=name]').attr("value", data.message.Name)
+                    $('input[name=sort]').attr("value", data.message.Sort)
+                    $('input[name=url]').attr("value", data.message.Url)
+                    $('input[name=icon]').attr("value", data.message.Icon)
+                    $('textarea[name=email]').val(data.message.Desc)
+                }
+                else{
+                    layer.msg(data.message, {icon: 2});
+                }
+            }
+        })
 	}	
+
+    function add(){
+        var parent_id = $('input[name=parent_id]').val()
+		var name = $('input[name=name]').val()
+		var sort = $('input[name=sort]').val()
+		var url = $('input[name=url]').val()
+		var icon = $('input[name=icon]').val()
+		var desc = $('textarea[name=email]').val()
+
+        $.ajax({
+            url:"/service/admin/auth_add",
+            dataType:"json",
+            type:"POST",
+            cache:false,
+            data:{
+                parent_id:parent_id,
+                name:name,
+                sort:sort,
+                url:url,
+                icon:icon,
+                desc:desc
+            },
+            success:function(data){
+                if(data.status == 0){
+                    initTree()
+                    layer.msg("新增权限成功", {icon: 1});
+                }
+                else{
+                    $.Huimodalalert(data.message,2000)
+                }
+            }
+        })
+    }
+
+    function edit(){
+        var id = $('input[name=id]').val()
+        var parent_id = $('input[name=parent_id]').val()
+		var name = $('input[name=name]').val()
+		var sort = $('input[name=sort]').val()
+		var url = $('input[name=url]').val()
+		var icon = $('input[name=icon]').val()
+		var desc = $('textarea[name=email]').val()
+
+        $.ajax({
+            url:"/service/admin/auth_edit",
+            dataType:"json",
+            type:"POST",
+            cache:false,
+            data:{
+                id:id,
+                parent_id:parent_id,
+                name:name,
+                sort:sort,
+                url:url,
+                icon:icon,
+                desc:desc
+            },
+            success:function(data){
+                if(data.status == 0){
+                    initTree()
+                    layer.msg("修改权限成功", {icon: 1});
+                }
+                else{
+                    $.Huimodalalert(data.message,2000)
+                }
+            }
+        })
+    }
+
+    function del(){
+        alert("del")
+    }
 </script>
