@@ -49,3 +49,46 @@ func (self *AuthController) GetOne(){
 	}
 	self.ajaxMsg(auth, MSG_OK)
 }
+
+func (self *AuthController) Edit(){
+    id, err := self.GetInt("id")
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	auth, err := models.GetAuthById(id)
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+
+	auth.ParentId, _ = self.GetInt("parent_id")
+	auth.Name = self.GetString("name")
+	auth.Icon = self.GetString("icon")
+	auth.Sort, _ = self.GetInt("sort")
+	auth.Url = self.GetString("url")
+	auth.Desc = self.GetString("desc")
+	auth.UpdatedAt = time.Now()
+
+	err = auth.Update()
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	self.ajaxMsg("权限修改成功", MSG_OK)
+}
+
+func (self *AuthController) Delete(){
+	id, err := self.GetInt("id")
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	auth, err := models.GetAuthById(id)
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	auth.Status = 0
+	auth.UpdatedAt = time.Now()
+	err = auth.Update()
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	self.ajaxMsg("权限删除成功", MSG_OK)
+}

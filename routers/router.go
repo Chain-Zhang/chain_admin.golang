@@ -6,23 +6,25 @@ import (
 )
 
 func init() {
-	beego.Router("/login", &controllers.LoginController{},"*:LoginIn")
-	beego.Router("/admin/index",&controllers.IndexController{},"*:Index")
-	beego.Router("/admin/userlist", &controllers.UserController{},"*:UserList")
-	beego.Router("/admin/useradd", &controllers.UserController{},"*:UserAdd")
-	beego.Router("/admin/useredit", &controllers.UserController{},"*:UserEdit")
+	beego.Router("/login", &controllers.LoginController{},"get:LoginIn")
+	beego.Router("/admin/index",&controllers.IndexController{},"get:Index")
+	beego.Router("/admin/userlist", &controllers.UserController{},"get:UserList")
+	beego.Router("/admin/useradd", &controllers.UserController{},"get:UserAdd")
+	beego.Router("/admin/useredit", &controllers.UserController{},"get:UserEdit")
 
 
-	beego.Router("/admin/auth", &controllers.AuthController{},"*:List")
+	beego.Router("/admin/auth", &controllers.AuthController{},"get:List")
 
-	beego.Router("/service/login", &controllers.LoginController{},"*:AjaxLogin")
-	beego.Router("/service/loginout", &controllers.LoginController{},"*:LoginOut")
-	beego.Router("/service/admin/user_add", &controllers.UserController{},"*:AjaxAdd")
-	beego.Router("/service/admin/user_edit", &controllers.UserController{},"*:AjaxEdit")
-	beego.Router("/service/admin/user_status_change", &controllers.UserController{}, "*:UserStatusChange")
-	beego.Router("/service/admin/user_del", &controllers.UserController{}, "*:UserDel")
+	beego.Router("/service/login", &controllers.LoginController{},"post:AjaxLogin")
+	beego.Router("/service/loginout", &controllers.LoginController{},"post:LoginOut")
+	beego.Router("/service/admin/user_add", &controllers.UserController{},"post:AjaxAdd")
+	beego.Router("/service/admin/user_edit", &controllers.UserController{},"post:AjaxEdit")
+	beego.Router("/service/admin/user_status_change", &controllers.UserController{}, "post:UserStatusChange")
+	beego.Router("/service/admin/user_del", &controllers.UserController{}, "post:UserDel")
 
-	beego.Router("/service/admin/auth_add", &controllers.AuthController{}, "*:Add")
-	beego.Router("/service/admin/auth_getlist", &controllers.AuthController{}, "*:GetList")
-	beego.Router("/service/admin/auth_getone", &controllers.AuthController{}, "*:GetOne")
+	beego.Router("/service/admin/auth_add", &controllers.AuthController{}, "post:Add")
+	beego.Router("/service/admin/auth_getlist", &controllers.AuthController{}, "get:GetList")
+	beego.Router("/service/admin/auth_getone", &controllers.AuthController{}, "get:GetOne")
+	beego.Router("/service/admin/auth_edit", &controllers.AuthController{}, "post:Edit")
+	beego.Router("/service/admin/auth_del", &controllers.AuthController{}, "post:Delete")
 }

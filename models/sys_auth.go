@@ -50,3 +50,14 @@ func GetAuthById(id int)(*Auth, error){
 	}
 	return auth, nil
 }
+
+func (auth *Auth) Update(fields ...string) error {
+	if _, err := orm.NewOrm().Update(auth, fields...); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (auth *Auth)Delete(fields ...string)(int64, error){
+	return orm.NewOrm().Delete(auth, fields...)
+}

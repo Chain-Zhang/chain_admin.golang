@@ -13,7 +13,12 @@
         <div class="tree-right">
             <article class="cl pd-20">
                 <form method="post" class="form form-horizontal" id="auth-edit">
-                    <input name="id" type="hidden">
+                    <div class="row cl">
+                        <label class="form-label col-xs-4 col-sm-3"><span class="c-red"></span>菜单编号：</label>
+                        <div class="formControls col-xs-8 col-sm-9">
+                            <input type="text" readonly class="input-text" value="" placeholder="" name="id">
+                        </div>
+                    </div>
                     <div class="row cl">
                         <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>父菜单编号：</label>
                         <div class="formControls col-xs-8 col-sm-9">
@@ -95,7 +100,6 @@
             type:"GET",
             cache:false,
             success:function(data){
-                console.log(data)
                 if (data.status == 0){
                     var treeObj = $.fn.zTree.init($("#tree"), setting, data.message);
                     treeObj.expandAll(true); 
@@ -111,15 +115,14 @@
             type:"GET",
             cache:false,
             success:function(data){
-                console.log(data)
                 if (data.status == 0){
-                    $('input[name=id]').attr("value", data.message.Id)
-                    $('input[name=parent_id]').attr("value", data.message.ParentId)
-                    $('input[name=name]').attr("value", data.message.Name)
-                    $('input[name=sort]').attr("value", data.message.Sort)
-                    $('input[name=url]').attr("value", data.message.Url)
-                    $('input[name=icon]').attr("value", data.message.Icon)
-                    $('textarea[name=email]').val(data.message.Desc)
+                    $('input[name=id]').val(data.message.Id)
+                    $('input[name=parent_id]').val(data.message.ParentId)
+                    $('input[name=name]').val(data.message.Name)
+                    $('input[name=sort]').val(data.message.Sort)
+                    $('input[name=url]').val(data.message.Url)
+                    $('input[name=icon]').val(data.message.Icon)
+                    $('textarea[name=desc]').val(data.message.Desc)
                 }
                 else{
                     layer.msg(data.message, {icon: 2});
@@ -134,7 +137,7 @@
 		var sort = $('input[name=sort]').val()
 		var url = $('input[name=url]').val()
 		var icon = $('input[name=icon]').val()
-		var desc = $('textarea[name=email]').val()
+		var desc = $('textarea[name=desc]').val()
 
         $.ajax({
             url:"/service/admin/auth_add",
@@ -155,7 +158,7 @@
                     layer.msg("新增权限成功", {icon: 1});
                 }
                 else{
-                    $.Huimodalalert(data.message,2000)
+                    layer.msg(data.message, {icon:2});
                 }
             }
         })
@@ -168,7 +171,7 @@
 		var sort = $('input[name=sort]').val()
 		var url = $('input[name=url]').val()
 		var icon = $('input[name=icon]').val()
-		var desc = $('textarea[name=email]').val()
+		var desc = $('textarea[name=desc]').val()
 
         $.ajax({
             url:"/service/admin/auth_edit",
@@ -190,13 +193,43 @@
                     layer.msg("修改权限成功", {icon: 1});
                 }
                 else{
-                    $.Huimodalalert(data.message,2000)
+                    layer.msg(date.message, {icon: 2});
                 }
             }
         })
     }
 
     function del(){
-        alert("del")
+        layer.confirm('确认要删除该权限吗？',function(){
+            var id = $('input[name=id]').val()
+            $.ajax({
+                url:"/service/admin/auth_del",
+                dataType:"json",
+                type:"POST",
+                cache:false,
+                data:{
+                    id:id
+                },
+                success:function(data){
+                    if(data.status == 0){
+                        initTree()
+                        $('input[name=id]').val("")
+                        $('input[name=parent_id]').val("")
+                        $('input[name=name]').val("")
+                        $('input[name=sort]').val("")
+                        $('input[name=url]').val("")
+                        $('input[name=icon]').val("")
+                        $('textarea[name=desc]').val("")
+                        layer.msg("删除权限成功", {icon: 1});
+                    }
+                    else{
+                        layer.msg(date.message, {icon: 2});
+                    }
+                }
+            })
+        },
+        function(){
+        layer.msg('已取消', {icon: 6});
+        });
     }
 </script>
