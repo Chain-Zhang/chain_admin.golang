@@ -1,0 +1,64 @@
+<div class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="/" class="maincolor">首页</a> 
+        <span class="c-999 en">&gt;</span>
+        <span class="c-666">用户管理</span> 
+        <span class="c-999 en">&gt;</span>
+        <span class="c-666">角色管理</span> 
+        <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i id="refresh" class="Hui-iconfont">&#xe68f;</i></a>
+    </nav>
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="cl pd-5 bg-1 bk-gray mt-20">
+                <span class="l"> 
+                    <a href="javascript:;" onclick="role_add()" class="btn btn-primary radius">
+                        <i class="Hui-iconfont">&#xe600;</i> 添加角色</a> </span>
+                <span class="r">共有数据：<strong>{{.total}}</strong> 条</span>
+                {{if .hasdata}}
+                    <div class="mt-20">
+                        <table class="table table-border table-bordered table-hover table-bg table-sort">
+                            <thead>
+                                <tr>
+                                    <th scope="col" colspan="9">角色列表</th>
+                                </tr>
+                                <tr class="text-c">
+                                    <th width="120">角色名称</th>
+                                    <th width="120">摘要</th>
+                                    <th width="100">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{range $index, $role := .roles}}
+                                <tr class="text-c">
+                                    <td>{{$role.Name}}</td>
+                                    <td>{{$role.Desc}}</td>
+                                    <td class="td-manage">
+                                        <a title="编辑" href="javascript:;" onclick="role_edit({{$role.Id}})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> 
+                                        <a title="删除" href="javascript:;" onclick="role_delete({{$role.Id}})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                                    </td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
+                {{end}}
+            </div>
+        </article>
+    </div>
+</div>
+
+<script type="text/javascript">
+    
+
+function role_add(){
+    layer_show("新增角色","/admin/roleadd",900,600);
+}
+
+function role_edit(id){
+    alert("edit " + id)
+}
+
+function role_delete(id){
+    alert("delete " + id)
+}
+
+</script>

@@ -12,8 +12,13 @@ func init() {
 	beego.Router("/admin/useradd", &controllers.UserController{},"get:UserAdd")
 	beego.Router("/admin/useredit", &controllers.UserController{},"get:UserEdit")
 
-
 	beego.Router("/admin/auth", &controllers.AuthController{},"get:List")
+
+	beego.Router("/admin/role", &controllers.RoleController{},"get:List")
+	beego.Router("/admin/roleadd", &controllers.RoleController{},"get:RoleAdd")
+
+
+
 
 	beego.Router("/service/login", &controllers.LoginController{},"post:AjaxLogin")
 	beego.Router("/service/loginout", &controllers.LoginController{},"post:LoginOut")
@@ -27,4 +32,6 @@ func init() {
 	beego.Router("/service/admin/auth_getone", &controllers.AuthController{}, "get:GetOne")
 	beego.Router("/service/admin/auth_edit", &controllers.AuthController{}, "post:Edit")
 	beego.Router("/service/admin/auth_del", &controllers.AuthController{}, "post:Delete")
+
+	beego.Router("/service/admin/role_add", &controllers.RoleController{}, "post:Add")
 }
