@@ -1,0 +1,142 @@
+
+<div class="pos-a tree-left">
+        <ul id="tree" class="ztree"></ul>
+    </div>
+    <div class="tree-right">
+        <article class="cl pd-20">
+            <form action="" method="post" class="form form-horizontal" id="role-edit">
+                <input type="hidden" name="id" value="{{.role.Id}}">
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名称：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <input type="text" class="input-text" value="{{.role.Name}}" placeholder="" name="name">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-3">摘要：</label>
+                    <div class="formControls col-xs-8 col-sm-9">
+                        <textarea name="desc" cols="" rows="6" class="textarea"  placeholder="说点什么..." datatype="*10-100" dragonfly="true" >{{.role.Desc}}</textarea>
+                    </div>
+                </div>
+                <div class="row cl">
+                    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                        <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                    </div>
+                </div>
+            </form>
+        </article>
+    </div>
+        <!--请在下方写此页面业务相关的脚本-->
+        <script type="text/javascript" src="/static/js/jquery.ztree.core.js"></script> 
+        <script type="text/javascript" src="/static/js/jquery.ztree.excheck.min.js"></script> 
+        <script type="text/javascript">
+        var checked = {{.authids}}
+        var setting = {
+            check: {
+                enable: true,
+                chkboxType:{
+                    Y:"ps",
+                    N:"ps"
+                }
+            },
+            data: {
+                key:{
+                    name:"Name"
+                },
+                simpleData: {
+                    enable: true,
+                    idKey: "Id",
+                    pIdKey: "ParentId",
+                },
+                
+            }
+        };
+    
+        $(function() {  
+            initTree()
+        }); 
+    
+        function initTree(){
+            $.ajax({
+                url:"/service/admin/auth_getlist",
+                dataType:"json",
+                type:"GET",
+                cache:false,
+                success:function(data){
+                    if (data.status == 0){
+                        nodes = initChecked(data.message)
+                        var treeObj = $.fn.zTree.init($("#tree"), setting, nodes);
+                        treeObj.expandAll(true); 
+                    }
+                }
+            })
+        }
+
+        function initChecked(nodes){
+            $.each(nodes,function(k,v){
+                if($.inArray(v.Id,checked)>=0){
+                    v.checked = true;
+                }
+                
+            });
+            return  nodes;
+        }
+    
+        $(function(){
+            $('.skin-minimal input').iCheck({
+                checkboxClass: 'icheckbox-blue',
+                radioClass: 'iradio-blue',
+                increaseArea: '20%'
+            });
+            
+            $("#role-edit").validate({
+                rules:{
+                    name:{
+                        required:true,
+                    },
+                },
+                onkeyup:false,
+                focusCleanup:true,
+                success:"valid",
+                submitHandler:function(form){
+                    var id = $('input[name=id]').val()
+                    var name = $('input[name=name]').val()
+                    var desc = $('textarea[name=desc]').val()
+                    var zTree = $.fn.zTree.getZTreeObj("tree")
+                    var checkedNodes = zTree.getCheckedNodes(true);
+                    var selectedIds = ""
+                    checkedNodes.forEach(element => {
+                        selectedIds += element.Id + ","
+                    });
+                    console.log(selectedIds)
+                    $.ajax({
+                        url : "/service/admin/role_edit",
+                        dataType : "json",
+                        type : "POST",
+                        cache : false,
+                        data:{
+                            id:id,
+                            ids:selectedIds,
+                            name:name,
+                            desc:desc,
+                        },
+                        success:function(data){
+                            if(data.status == 0){
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.$('#refresh').click();
+                                parent.layer.close(index);
+                            }else{
+                                lay.msg(data.message, {icon:2})
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(xhr);
+                            console.log(status);
+                            console.log(error);
+                        }
+                    });
+                    
+                }
+            });
+        });
+        </script>

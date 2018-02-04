@@ -16,6 +16,7 @@ func init() {
 
 	beego.Router("/admin/role", &controllers.RoleController{},"get:List")
 	beego.Router("/admin/roleadd", &controllers.RoleController{},"get:RoleAdd")
+	beego.Router("/admin/roleedit", &controllers.RoleController{},"get:RoleEdit")
 
 
 
@@ -34,4 +35,5 @@ func init() {
 	beego.Router("/service/admin/auth_del", &controllers.AuthController{}, "post:Delete")
 
 	beego.Router("/service/admin/role_add", &controllers.RoleController{}, "post:Add")
+	beego.Router("/service/admin/role_edit", &controllers.RoleController{}, "post:Edit")
 }

@@ -24,7 +24,6 @@
             </div>
         </form>
     </article>
-    <a href="javascript:;" onclick="getchecks()">get checks</a>
 </div>
     <!--请在下方写此页面业务相关的脚本-->
     <script type="text/javascript" src="/static/js/jquery.ztree.core.js"></script> 
@@ -70,12 +69,6 @@
         })
     }
 
-    function getchecks(){
-        var zTree = $.fn.zTree.getZTreeObj("tree")
-        var checkedNodes = zTree.getCheckedNodes(true);
-        console.log(checkedNodes)
-    }
-
     $(function(){
         $('.skin-minimal input').iCheck({
             checkboxClass: 'icheckbox-blue',
@@ -95,12 +88,20 @@
             submitHandler:function(form){
                 var name = $('input[name=name]').val()
                 var desc = $('textarea[name=desc]').val()
+                var zTree = $.fn.zTree.getZTreeObj("tree")
+                var checkedNodes = zTree.getCheckedNodes(true);
+                var selectedIds = ""
+                checkedNodes.forEach(element => {
+                    selectedIds += element.Id + ","
+                });
+                console.log(selectedIds)
                 $.ajax({
                     url : "/service/admin/role_add",
                     dataType : "json",
                     type : "POST",
                     cache : false,
                     data:{
+                        ids:selectedIds,
                         name:name,
                         desc:desc,
                     },
