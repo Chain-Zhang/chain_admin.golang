@@ -58,7 +58,26 @@ function role_edit(id){
 }
 
 function role_delete(id){
-    alert("delete " + id)
+    layer.confirm('确认要删除该角色吗？',function(){
+        $.ajax({
+            url:"/service/admin/role_del",
+            dataType:"json",
+            type:"POST",
+            cache:false,
+            data:{id:id},
+            success:function(data){
+                if (data.status == 0){
+                    layer.msg(data.message, {icon: 1});
+                    $('#refresh').click();
+                }else{
+                    layer.msg(data.message, {icon: 2});
+                }
+            }
+        })
+    },
+    function(){
+        layer.msg('已取消', {icon: 6});
+    });
 }
 
 </script>

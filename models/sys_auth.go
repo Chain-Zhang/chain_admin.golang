@@ -14,7 +14,8 @@ type Auth struct{
 	Sort int
 	Status int
 	Icon string
-	IsShow bool
+	IsMenu bool
+	Method string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

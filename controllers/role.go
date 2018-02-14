@@ -119,3 +119,19 @@ func (self *RoleController)Edit(){
 	}
 	self.ajaxMsg("编辑角色成功", MSG_OK)
 }
+
+func (self *RoleController) Delete(){
+	id, err := self.GetInt("id")
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	role, err := models.GetRoleById(id)
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	_, err = role.Delete("id")
+	if err != nil{
+		self.ajaxMsg(err.Error(), MSG_ERR)
+	}
+	self.ajaxMsg("角色【" + role.Name +"】已删除", MSG_OK)
+}
