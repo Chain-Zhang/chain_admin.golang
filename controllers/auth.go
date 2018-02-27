@@ -21,8 +21,10 @@ func (self *AuthController) Add(){
 	auth.Sort, _ = self.GetInt("sort")
 	auth.Url = self.GetString("url")
 	auth.Desc = self.GetString("desc")
+	auth.Method = self.GetString("method")
+	auth.IsMenu,_ = self.GetBool("is_menu")
 	auth.Status = 1
-	auth.IsShow = true
+	auth.IsMenu = true
 	auth.CreatedAt = time.Now()
 	auth.UpdatedAt = time.Now()
 
@@ -66,6 +68,8 @@ func (self *AuthController) Edit(){
 	auth.Sort, _ = self.GetInt("sort")
 	auth.Url = self.GetString("url")
 	auth.Desc = self.GetString("desc")
+	auth.Method = self.GetString("method")
+	auth.IsMenu,_ = self.GetBool("is_menu")
 	auth.UpdatedAt = time.Now()
 
 	err = auth.Update()

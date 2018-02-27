@@ -19,6 +19,10 @@ func init() {
 	beego.Router("/admin/roleedit", &controllers.RoleController{},"get:RoleEdit")
 
 
+	beego.Router("/error/403", &controllers.ErrorController{},"get:Error403")
+	beego.Router("/error/404", &controllers.ErrorController{},"get:Error404")
+
+
 
 
 	beego.Router("/service/login", &controllers.LoginController{},"post:AjaxLogin")

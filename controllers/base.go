@@ -23,6 +23,7 @@ type BaseController struct{
 	pageSize int
 	login_userId int
 	login_user *models.User
+	allowUrl []string
 }
 
 func (self *BaseController) Prepare(){
@@ -59,6 +60,13 @@ func (self *BaseController)auth() bool{
 		self.redirect("/login")
 	}
 	return false
+}
+
+func (self *BaseController)permission(){
+	if self.controllerName == "error"{
+		return
+	}
+
 }
 
 func (self *BaseController) display(tpl ...string){
@@ -103,4 +111,16 @@ func (self *BaseController) redirect(url string) {
 	logs.Info("url: ",url)
 	self.Redirect(url, 302)
 	self.StopRun()
+}
+
+func (self *BaseController) to403(){
+	self.redirect("/error/403")
+}
+
+func (self *BaseController) to404(){
+	self.redirect("/error/404")
+}
+
+func (self *BaseController)getMenu(){
+	
 }

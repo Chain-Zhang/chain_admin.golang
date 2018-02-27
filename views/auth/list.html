@@ -44,9 +44,24 @@
                         </div>
                     </div>
                     <div class="row cl">
+                        <label class="form-label col-xs-4 col-sm-3">Method</label>
+                        <div class="formControls col-xs-8 col-sm-9">
+                            <input type="text" class="input-text" value="" placeholder="" name="method">
+                        </div>
+                    </div>
+                    <div class="row cl">
                         <label class="form-label col-xs-4 col-sm-3">icon：</label>
                         <div class="formControls col-xs-8 col-sm-9">
                             <input type="text" class="input-text" value="" placeholder="" name="icon">
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <label class="form-label col-xs-4 col-sm-3">是否菜单</label>
+                        <div class="formControls col-xs-8 col-sm-9">
+                            <div class="check-box">
+                                <input type="checkbox" id="checkbox-pinglun" name="is_menu">
+                                <label for="checkbox-pinglun">&nbsp;</label>
+                            </div>
                         </div>
                     </div>
                     <div class="row cl">
@@ -123,6 +138,7 @@
                     $('input[name=url]').val(data.message.Url)
                     $('input[name=icon]').val(data.message.Icon)
                     $('textarea[name=desc]').val(data.message.Desc)
+                    $('input[name=method]').val(data.message.Method)
                 }
                 else{
                     layer.msg(data.message, {icon: 2});
@@ -138,6 +154,8 @@
 		var url = $('input[name=url]').val()
 		var icon = $('input[name=icon]').val()
 		var desc = $('textarea[name=desc]').val()
+		var method = $('input[name=method]').val()
+        var is_menu = $('input[name=is_menu]').attr('checked'); 
 
         $.ajax({
             url:"/service/admin/auth_add",
@@ -150,7 +168,9 @@
                 sort:sort,
                 url:url,
                 icon:icon,
-                desc:desc
+                desc:desc,
+                method:method,
+                is_menu:is_menu
             },
             success:function(data){
                 if(data.status == 0){
@@ -171,7 +191,9 @@
 		var sort = $('input[name=sort]').val()
 		var url = $('input[name=url]').val()
 		var icon = $('input[name=icon]').val()
+		var method = $('input[name=method]').val()
 		var desc = $('textarea[name=desc]').val()
+        var is_menu = $('input[name=is_menu]').attr('checked'); 
 
         $.ajax({
             url:"/service/admin/auth_edit",
@@ -185,7 +207,9 @@
                 sort:sort,
                 url:url,
                 icon:icon,
-                desc:desc
+                desc:desc,
+                method:method,
+                is_menu:is_menu
             },
             success:function(data){
                 if(data.status == 0){
